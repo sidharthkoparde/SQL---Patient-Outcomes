@@ -1,0 +1,28 @@
+SELECT 
+    p.patient_id,
+    p.first_name,
+    p.last_name,
+    p.age,
+    p.gender,
+    f.facility_name,
+    t.treatment_name,
+    o.recovery_days,
+    CASE 
+        WHEN p.age < 30 THEN 'Under 30'
+        WHEN p.age BETWEEN 30 AND 50 THEN '30-50'
+        ELSE 'Over 50'
+    END AS age_group
+FROM 
+    Patients p
+JOIN 
+    Treatments t ON p.treatment_id = t.treatment_id
+JOIN 
+    Outcomes o ON p.patient_id = o.patient_id
+JOIN 
+    Facilities f ON o.facility_id = f.facility_id
+WHERE 
+    f.facility_region = 'Northeast' 
+    AND o.recovery_days IS NOT NULL
+    AND t.treatment_type = 'Physical Therapy'
+ORDER BY 
+    age_group, o.recovery_days;
